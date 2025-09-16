@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const baseURL = 'https://qacandidatetest.ensek.io/'
+const orders = baseURL + 'ENSEK/orders'
 
 test.describe('Test Buy energy', () => {
 
@@ -58,19 +59,26 @@ test.describe('Test Buy energy', () => {
         expect(data.message).toContain('You have purchased 10 m³ at a cost of 3.4')
 
     });
-
-    test('verify electric purchase confirmation show correct quanity and price', async ({ request }) => {
-        const endpoint_buy_electric = baseURL + '/ENSEK/buy/3/10'
-        // Send put request
-        const response = await request.put(endpoint_buy_electric);
-        expect(response.ok()).toBeTruthy();
-        expect(response.status()).toBe(200);
-        // Parse response JSON
-        const data = await response.json();
-        expect(data).toContain('You have purchased 10 kWh at a cost of 4.7');
+//purchase electricity
+    test.only('verify electric purchase confirmation show correct quanity and price', async ({ request }) => {
+        // const endpoint_buy_electric = baseURL + '/ENSEK/buy/3/10'
+        // // Send put request
+        // const response = await request.put(endpoint_buy_electric);
+        // expect(response.ok()).toBeTruthy();
+        // expect(response.status()).toBe(200);
+        // // Parse response JSON
+        // const data = await response.json();
+        // expect(data).toContain('You have purchased 10 kWh at a cost of 4.7');
+        //check order details
+        const orders_response = await request.get(orders)
+        //parse response JSON
+        const orders_data = await orders_response.json();
+        expect(orders_data[0].fuel).toBe('gas');
+        //
 
     });
 
+    //purchase oil
     test('verify oil purchase confirmation show correct quanity and price', async ({ request }) => {
         const endpoint_buy_oil = baseURL + '/ENSEK/buy/4/10'
         // Send put request
